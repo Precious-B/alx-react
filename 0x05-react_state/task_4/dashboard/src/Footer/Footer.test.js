@@ -1,71 +1,41 @@
 import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure, mount } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import Footer from './Footer';
-import { StyleSheetTestUtils } from 'aphrodite';
+import { user, logOut } from '../App/AppContext';
 import AppContext from '../App/AppContext';
 
-configure({adapter: new Adapter()});
-
-describe("Testing the <Footer /> Component", () => {
-	
-	let wrapper;
-
-	beforeEach(() => {
-		StyleSheetTestUtils.suppressStyleInjection();
-		wrapper = shallow(<Footer shouldRender />);
+describe('Basic React Tests - <Footer />', function() {
+	it('Should render without crashing', () => {
+		const wrapper = shallow(<Footer />);
+		expect(wrapper.exists()).toBeTruthy();
 	});
 
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
-
-	it("<Footer /> is rendered without crashing", () => {
-		expect(wrapper.render()).to.not.be.an('undefined');
-	});
-
-	it("<Footer /> renders at least the text: Copyright", () => {
+	it('Should render footer component and the text Copyright', () => {
 		const wrapper = mount(<Footer />);
-		expect(wrapper.find('p').at(0).html()).to.include('Copyright');
+		expect(wrapper.find('.Footer')).toHaveLength(1);
+		expect(wrapper.find('.Footer p').text()).toContain('Copyright');
 	});
 
-	it("verify that the link is not displayed when the user is logged out within the context", () => {
-		const contextVal = {
-      user: {
-        email: '',
-        password: '',
-        isLoggedIn: false,
-      },
-      logOut: () => this.logOut(),
-		};
-
+	it('Should check that the link is not displayed when the user is logged out within the contex', () => {
 		const wrapper = mount(
-			<AppContext.Provider value={contextVal}>
+			<AppContext.Provider value={{ user, logOut }}>
 				<Footer />
 			</AppContext.Provider>
 		);
-
-		expect(wrapper.find('a')).to.have.lengthOf(0);
+		expect(wrapper.find('a').exists()).not.toBeTruthy();
 	});
 
-	it("verify that the link is not displayed when the user is logged out within the context", () => {
-		const contextVal = {
-      user: {
-        email: 'cyborg13x@gmail.com',
-        password: 'qe135ba',
-        isLoggedIn: true,
-      },
-      logOut: () => this.logOut(),
+	it('Should check that the link is displayed when the user is logged in within the context', () => {
+		const newUser = {
+			email: 'mnortiz.ortiz@gmail.com',
+			password: '012345',
+			isLoggedIn: true
 		};
-
 		const wrapper = mount(
-			<AppContext.Provider value={contextVal}>
+			<AppContext.Provider value={{ user: newUser, logOut }}>
 				<Footer />
 			</AppContext.Provider>
 		);
-
-		expect(wrapper.find('a')).to.have.lengthOf(1);
+		expect(wrapper.find('a').exists()).toBeTruthy();
 	});
-
 });

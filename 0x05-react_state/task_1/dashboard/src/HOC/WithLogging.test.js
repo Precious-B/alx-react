@@ -1,51 +1,41 @@
 import React from 'react';
-import chai, { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { configure, mount } from 'enzyme';
-import WithLogging from './WithLogging.js';
-import sinonChai from 'sinon-chai';
-import { spy } from 'sinon';
-import Login from '../Login/Login.js';
-import { StyleSheetTestUtils, } from 'aphrodite';
+import { shallow, mount } from 'enzyme';
+import { StyleSheetTestUtils } from 'aphrodite';
+import WithLogging from './WithLogging';
+import Login from '../Login/Login';
 
-chai.use(sinonChai);
-
-configure({
-	adapter: new Adapter()
+beforeEach(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
 });
 
-let log = spy(console, 'log');
+afterEach(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-describe("Testing the <WithLogging /> Component", () => {
+describe('Basic React Tests - <WithLogging />', function() {
+	it('When the wrapped element is pure html - Should check that console.log was called on mount and on unmount with Component', () => {
+		console.log = jest.fn();
+		const Hoc = WithLogging(() => <p />);
+		const wrapper = mount(<Hoc />);
 
-	beforeEach(() => {
-		StyleSheetTestUtils.suppressStyleInjection();
-	});
+		expect(wrapper.exists()).toEqual(true);
+		expect(console.log).toHaveBeenNthCalledWith(1, 'Component Component is mounted');
+    wrapper.unmount();
+    expect(console.log).toHaveBeenNthCalledWith(2, 'Component Component is going to unmount');
 
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
+    jest.restoreAllMocks();
+  });
 
-	it("Renders the correct children with pure html as a child", () => {
-		let wrapper = mount(
-			<WithLogging>
-				<p>simple phrase</p>
-			</WithLogging>
-		);
-		expect(log).to.have.been.calledWith('Component Component is mounted');
-		wrapper.unmount();
-		expect(log).to.have.been.calledWith('Component Component is going to unmount');
-	});
+	it('When the wrapped element is the Login component - Should check that console.log was called on mount and on unmount with the name of the component', () => {
+		console.log = jest.fn();
+    const Hoc = WithLogging(Login);
+    const wrapper = mount(<Hoc />);
 
-	it("Renders the correct children with <Login /> Component as a child", () => {
-		let wrapper = mount(
-			<WithLogging>
-				<Login />
-			</WithLogging>
-		);
-		expect(log).to.have.been.calledWith('Component Login is mounted');
-		wrapper.unmount();
-		expect(log).to.have.been.calledWith('Component Login is going to unmount');
-	});
+		expect(wrapper.exists()).toEqual(true);
+    expect(console.log).toHaveBeenNthCalledWith(1, 'Component Login is mounted');
+    wrapper.unmount();
+    expect(console.log).toHaveBeenNthCalledWith(2, 'Component Login is going to unmount');
 
+    jest.restoreAllMocks();
+  });
 });

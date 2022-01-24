@@ -1,66 +1,52 @@
-import React, { Component, Fragment } from 'react';
-import logo from '../assets/holberton_logo.jpg';
+import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
+import logo from '../assets/holberton-logo.jpg';
 import AppContext from '../App/AppContext';
-import PropTypes from 'prop-types';
 
-class Header extends Component {
-
-	static contextType = AppContext;
-
+class Header extends React.Component {
 	constructor(props) {
 		super(props);
-	};
+	}
 
 	render() {
-
 		const { user, logOut } = this.context;
-
 		return (
-			<div className={css(styles.appHeader)}>
-				<img
-					src={logo}
-					alt="logo"
-				/>
-				<h1 className={css(styles.heading1)}>
-					School dashboard
-				</h1>
+			<header className={css(styles.Header)}>
+				<img src={logo} className={css(styles.HeaderLogo)} alt="logo" />
+				<h1>School dashboard</h1>
 				{
-					user.isLoggedIn &&
-					<section id="logoutSection">
-						<hr size="2" width="90%" />
-						Welcome <b>{user.email}</b> <a href="#" onClick={() => logOut()}>(logout)</a>
-					</section>
+					user.isLoggedIn && (
+						<h2 id='logoutSection'>
+							Welcome <b>{user.email}</b>
+							<span onClick={logOut} className={css(styles.logOutSpanSection)}>
+								(logout)
+							</span>
+						</h2>
+					)
 				}
-			</div>
+			</header>
 		);
-	};
-};
+	}
+}
 
-Header.propTypes = {
-	user: PropTypes.object,
-	logOut: PropTypes.func
-};
-
-Header.defaultProps = {
-	user: {
-		email: '',
-		password: '',
-		isLoggedIn: false,
-	},
-	logOut: () => this.logOut(),
-};
+Header.contextType = AppContext;
 
 const styles = StyleSheet.create({
-	appHeader: {
+	Header: {
 		display: 'flex',
-		flexDirection: 'row',
-		justifyContent: 'left',
+		alignItems: 'center',
+		justifyContent: 'flex-start',
+		color: '#e1354b',
+		borderBottom: '4px solid #e1354b'
 	},
-	heading1: {
-		margin: 'auto auto auto 0',
-		color: `var(--holberton-red)`,
-		// color: `var(${--holberton-red})`,
+
+	HeaderLogo: {
+		width: '20%'
+	},
+
+	logOutSpanSection: {
+		cursor: 'pointer',
+		fontStyle: 'italic'
 	},
 });
 

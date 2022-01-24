@@ -1,40 +1,38 @@
 import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure, mount, } from 'enzyme';
-import BodySectionWithMarginBottom from './BodySectionWithMarginBottom.js';
-import BodySection from './BodySection.js';
-import { StyleSheetTestUtils, } from 'aphrodite';
+import { shallow } from 'enzyme';
+import { StyleSheetTestUtils } from 'aphrodite';
+import BodySectionWithMarginBottom from './BodySectionWithMarginBottom';
 
-configure({
-	adapter: new Adapter()
+beforeEach(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
 });
 
-describe("Testing the <BodySectionWithMarginBottom /> Component", () => {
+afterEach(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-	beforeEach(() => {
-		StyleSheetTestUtils.suppressStyleInjection();
+describe('Basic React Tests - <BodySectionWithMarginBottom />', function() {
+	it('Should render without crashing', () => {
+		const wrapper = shallow(<BodySectionWithMarginBottom />);
+		expect(wrapper.exists()).toBeTruthy();
 	});
 
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
-
-	it("Renders the 'BodySection' Component correctly", () => {
-		let props = {
-			title: 'title',
-			children: React.createElement('p', 'test child'),
-		};
-
-		let wrapper = shallow(
-			<BodySectionWithMarginBottom {...props} />
+	it('Should render correctly a BodySection component and that the props are passed correctly to the child component', () => {
+		const wrapper = shallow(
+			<BodySectionWithMarginBottom title='title' >
+				<p>children</p>
+			</BodySectionWithMarginBottom>
 		);
-
-		expect(wrapper.containsAllMatchingElements([
-			<div>
-				<BodySection {...props} />
-			</div>
-		])).to.equal(true);
+		expect(wrapper.find("BodySection")).toHaveLength(1);
+    expect(wrapper.find("BodySection").props().title).toEqual('title');
 	});
 
+	it("Should check that the CSS is correctly applied to BodySectionWithMarginBottom", () => {
+    const wrapper = shallow(
+      <BodySectionWithMarginBottom title="title">
+        <p>children</p>
+      </BodySectionWithMarginBottom>
+    );
+    //expect(wrapper.find(".bodySectionWithMargin").first().exists()).toEqual(true);
+  });
 });

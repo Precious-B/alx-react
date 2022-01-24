@@ -1,53 +1,71 @@
-import React, { Component, Fragment} from 'react';
-import { StyleSheet, css, } from 'aphrodite';
+import  React from 'react';
+import { StyleSheet, css } from "aphrodite";
 
-class Login extends Component {
-	render() {
-		return (
-			<Fragment>
-				<div className={css(styles.loginBody)}>
-					<p>
-						Login to access the full dashboard
-					</p>
-					<div className={css(styles.inputContainer)}>
-						<label htmlFor="email">Email: </label>
-						<input className={css(styles.input)} type="email" id="email" name="email" />
+function Login() {
+  return (
+    <React.Fragment>
+      <div className={css(styles.Login)}>
+				<p>Login to access to the full dashboard</p>
+				<div>
+					<div className={css(styles.inputGroup)}> 
+						<label htmlFor="email" >Email:</label>
+						<input id="email" type="email" className={css(styles.LoginInput)} />
 					</div>
-					<div className={css(styles.inputContainer)}>
-						<label htmlFor="password">Password: </label>
-						<input className={css(styles.input)} type="password" id="password" name="password" />
+					<div className={css(styles.inputGroup)}>
+						<label htmlFor="password" >Password:</label>
+						<input id="password" type="password" className={css(styles.LoginInput)} />
 					</div>
-					<div className={css(styles.inputContainer)}>
-						<button>OK</button>
-					</div>
+					<button className={css(styles.loginButton)}>OK</button>
 				</div>
-			</Fragment>
-		);
-	}
+      </div>
+    </React.Fragment>
+  );
+}
+
+const responsive = {
+	small: '@media screen and (max-width: 900px)'
 };
 
 const styles = StyleSheet.create({
-	loginBody: {
-		padding: '36px 24px',
+	Login: {
+		fontFamily: 'Arial, Helvetica, sans-serif',
+		padding: '50px',
+		[responsive.small]: {
+			padding: 0
+		}
 	},
-	input: {
-		margin: '0 16px 0 8px',
-	},
-	inputContainer: {
-		display: 'inline',
-		'@media (max-width: 900px)': {
-			display: 'block',
-		},
-	},
-});
 
-// const styles = StyleSheet.create({
-// 	loginBody: {
-// 		padding: '36px 24px',
-// 	},
-// 	input: {
-// 		margin: '0 16px 0 8px',
-// 	},
-// });
+	Loginp: {
+		top: '3rem',
+		left: '2.5rem'
+	},
+
+	Logindiv: {
+		marginLeft: '-5px',
+		marginTop: '15px'
+	},
+
+	LoginInput: {
+		margin: '5px',
+		[responsive.small]: {
+			border: 'none'
+		}
+	},
+
+	inputGroup: {
+		display: 'inline',
+		[responsive.small]: {
+			display: 'flex'
+		}
+	},
+
+	loginButton: {
+		[responsive.small]: {
+			border: '3px solid orange',
+			borderRadius: '5px',
+			
+		}
+	}
+});
 
 export default Login;

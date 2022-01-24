@@ -1,91 +1,79 @@
 import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure, mount } from 'enzyme';
+import { shallow, mount } from 'enzyme';
+import { StyleSheetTestUtils } from 'aphrodite';
 import Header from './Header';
-import { StyleSheetTestUtils, } from 'aphrodite';
-import AppContext from '../App/AppContext';
+import { user, logOut } from '../App/AppContext';
+import AppContext from '../App/AppContext.js';
 
-configure({adapter: new Adapter()});
+beforeEach(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
 
-describe("Testing the <Header /> Component", () => {
-	
-	let wrapper;
+afterEach(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-	let context = {
-		user: {
-			email: 'messi@gmail.com',
-			password: '1234abcd',
-			isLoggedIn: true,
-		},
-		logOut: () => {},
-	};
-
-	beforeEach(() => {
-		wrapper = mount(
-			<Header shouldRender />,
-			{ context: AppContext }
+describe('Basic React Tests - <Header />', function() {
+	it('Should render without crashing', () => {
+		const wrapper = mount(
+			<AppContext.Provider value={{ user, logOut }}>
+				<Header />
+			</AppContext.Provider>
 		);
-
-		StyleSheetTestUtils.suppressStyleInjection();
+		expect(wrapper.exists()).toBeTruthy();
 	});
 
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+	it('Should check that the logoutSection is not created with a default context value', () => {
+		const wrapper = mount(
+			<AppContext.Provider value={{ user, logOut }}>
+				<Header />
+			</AppContext.Provider>
+		);
+		expect(wrapper.find('#logoutSection').exists()).not.toBeTruthy();
 	});
 
-	it("<Header /> is rendered without crashing", () => {
-		expect(wrapper.render()).to.not.be.an('undefined');
-	});
-
-	it("<Header /> render img tag", () => {
-		expect(wrapper.find('img')).to.have.lengthOf(1);
-	});
-
-	it("<Header /> render h1 tag", () => {
-		expect(wrapper.find('h1')).to.have.lengthOf(1);
-	});
-
-	it("Verify that the logoutSection is not created", () => {
-		expect(wrapper.find("#logoutSection")).to.have.lengthOf(0);
-	});
-
-	it("Verify that the logoutSection is created", () => {
-		let context = {
-			user: {
-				email: 'messi@gmail.com',
-				password: '1234abcd',
-				isLoggedIn: true,
-			},
-			logOut: () => {},
+	it('Should check that the logoutSection is created with a user defined', () => {
+		const newUser = {
+			email: 'mnortiz.ortiz@gmail.com',
+			password: '012345',
+			isLoggedIn: true
 		};
 
-		let wrapperTwo = mount(
-			<Header />,
-			{ context: context }
+		const wrapper = mount(
+			<AppContext.Provider value={{ user: newUser, logOut }}>
+				<Header />
+			</AppContext.Provider>
 		);
-		expect(wrapperTwo.find("#logoutSection").at(0)).to.not.be.false;
+		expect(wrapper.find('#logoutSection').exists()).toBeTruthy();
 	});
 
-	it("Verify that clicking on the link 'Logout' is calling the spy", () => {		
-		let context = {
-			user: {
-				email: 'messi@gmail.com',
-				password: '1234abcd',
-				isLoggedIn: true,
-			},
-			logOut: () => {},
+	it('Should check that clicking on the link is calling the spy with a user defined', () => {
+		const spy = jest.fn();
+		const newUser = {
+			email: 'mnortiz.ortiz@gmail.com',
+			password: '012345',
+			isLoggedIn: true
 		};
 
-		let wrapperTwo = mount(
-			<Header />,
-			{ context: context }
+		const wrapper = mount(
+			<AppContext.Provider value={{ user: newUser, logOut: spy }}>
+				<Header />
+			</AppContext.Provider>
 		);
+		expect(wrapper.find('#logoutSection').exists()).toBeTruthy();
+		wrapper.find('#logoutSection span').simulate('click');
+		expect(spy).toHaveBeenCalled();
 
-		let spy = jest.spyOn(wrapperTwo.instance().context, "logOut");
-
-		// wrapperTwo.find('a').simulate('click');
-		// expect(spy).toBeCalled();
+		jest.restoreAllMocks();
 	});
 
+	// it('Should render img tag', () => {
+	// 	const wrapper = shallow(<Header />);
+	// 	expect(wrapper.find('.Header img').exists()).toEqual(true);
+	// });
+
+	// it('Should render h1 tag', () => {
+	// 	const wrapper = shallow(<Header />);
+	// 	expect(wrapper.find('.Header h1').exists()).toEqual(true);
+	// });
 });

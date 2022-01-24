@@ -1,34 +1,31 @@
 import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure, mount, } from 'enzyme';
-import BodySection from './BodySection.js';
+import { shallow } from 'enzyme';
+import BodySection from './BodySection';
 import { StyleSheetTestUtils } from 'aphrodite';
 
-configure({
-	adapter: new Adapter()
+beforeEach(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
 });
 
-describe("Testing the <BodySection /> Component", () => {
+afterEach(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-	beforeEach(() => {
-		StyleSheetTestUtils.suppressStyleInjection();
+describe('Basic React Tests - <BodySection />', function() {
+	it('Should render without crashing', () => {
+		const wrapper = shallow(<BodySection />);
+		expect(wrapper.exists()).toBeTruthy();
 	});
 
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
-
-	it("Renders the correct children", () => {
-		let wrapper = shallow(
+	it('Should render correctly the children and one h2 element', () => {
+		const wrapper = shallow(
 			<BodySection title="test title">
 				<p>test children node</p>
 			</BodySection>
 		);
-		expect(wrapper.containsAllMatchingElements([
-			<h2>test title</h2>,
-			<p>test children node</p>
-		])).to.equal(true);
+		expect(wrapper.find('h2')).toHaveLength(1);
+		expect(wrapper.find('h2').text('test title')).toBeTruthy();
+		expect(wrapper.find('p')).toHaveLength(1);
+		expect(wrapper.find('p').text('test children node')).toBeTruthy();
 	});
-
 });
