@@ -1,2 +1,1 @@
-## PROJECT DESCRIPTION
-React Component
+# React Component
