@@ -1,4 +1,4 @@
-# 0x02. React intro
+# React intro
 :open_file_folder: Specializations - Web Stack programming ― React  
 :bust_in_silhouette: By Johann Kerbrat, Engineering Manager at Uber Works  
 :copyright: **[Holberton School](https://www.holbertonschool.com/)**  
@@ -41,5 +41,3 @@ At the end of this project, you are expected to be able to [explain to anyone](h
 * [x] 10. Reorganize the files
 * [x] 11. Testing
 
-## Software engineer
-[Javier Andrés Garzón Patarroyo](https://www.javierandresgp.com)
